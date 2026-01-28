@@ -14,15 +14,19 @@ interface Job {
 export function JobTicker() {
     const [jobs, setJobs] = useState<Job[]>([]);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(false);
 
     const fetchJobs = async () => {
         setLoading(true);
+        setError(false);
         try {
             const res = await fetch("/api/jobs");
+            if (!res.ok) throw new Error("Failed");
             const data = await res.json();
             setJobs(data);
         } catch (error) {
             console.error("Failed to fetch jobs", error);
+            setError(true);
         } finally {
             setLoading(false);
         }
@@ -50,8 +54,12 @@ export function JobTicker() {
             </div>
 
             <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar space-y-3">
-                {loading && jobs.length === 0 ? (
+                {loading ? (
                     <div className="text-center text-gray-400 py-10">Searching for updates...</div>
+                ) : error ? (
+                    <div className="text-center text-red-400 py-10">Failed to load updates.</div>
+                ) : jobs.length === 0 ? (
+                    <div className="text-center text-gray-400 py-10">No updates found.</div>
                 ) : (
                     jobs.map((job) => (
                         <motion.div
