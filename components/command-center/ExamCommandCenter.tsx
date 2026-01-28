@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { GlassCard } from "@/components/ui/GlassCard";
+import { NotificationModal } from "@/components/ui/NotificationModal";
 import { EXAM_CALENDAR_2026, ExamEvent, ExamCategory } from "@/data/exams";
 import { Calendar, Clock, Bell, ArrowRight, ExternalLink } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -38,6 +39,7 @@ function getDynamicStatus(exam: ExamEvent): { text: string; color: string } {
 
 export function ExamCommandCenter() {
     const [selectedCategory, setSelectedCategory] = useState<ExamCategory | "All">("All");
+    const [notifyExam, setNotifyExam] = useState<ExamEvent | null>(null);
 
     const filteredExams = selectedCategory === "All"
         ? EXAM_CALENDAR_2026
@@ -104,7 +106,10 @@ export function ExamCommandCenter() {
                                         Apply Now <ExternalLink className="w-4 h-4" />
                                     </a>
                                 ) : (
-                                    <button className="flex-1 flex items-center justify-center gap-2 py-2 rounded-lg bg-white/5 text-gray-300 font-medium hover:bg-white/10 transition-colors">
+                                    <button
+                                        onClick={() => setNotifyExam(exam)}
+                                        className="flex-1 flex items-center justify-center gap-2 py-2 rounded-lg bg-white/5 text-gray-300 font-medium hover:bg-white/10 transition-colors"
+                                    >
                                         <Bell className="w-4 h-4" /> Notify Me
                                     </button>
                                 )}
@@ -113,6 +118,12 @@ export function ExamCommandCenter() {
                     );
                 })}
             </div>
+
+            <NotificationModal
+                isOpen={!!notifyExam}
+                onClose={() => setNotifyExam(null)}
+                examName={notifyExam?.name || ""}
+            />
         </div>
     );
 }
