@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "pages:build": "npx @cloudflare/next-on-pages && echo \"_worker.js\" > .vercel/output/static/.assetsignore"
+    "pages:build": "npx @cloudflare/next-on-pages --force && echo \"_worker.js\" > .vercel/output/static/.assetsignore"
   },
   "dependencies": {
     "axios": "^1.13.2",
