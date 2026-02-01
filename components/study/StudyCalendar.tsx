@@ -92,8 +92,8 @@ export function StudyCalendar({ onClose }: StudyCalendarProps) {
 
                     {/* Calendar Grid */}
                     <div className="grid grid-cols-7 gap-2 text-center text-sm mb-6">
-                        {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map(d => (
-                            <div key={d} className="text-gray-500 font-medium py-2">{d}</div>
+                        {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((d, i) => (
+                            <div key={i} className="text-gray-500 font-medium py-2">{d}</div>
                         ))}
                         {days.map((day, idx) => {
                             if (!day) return <div key={`empty-${idx}`} />;
