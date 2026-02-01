@@ -9,6 +9,9 @@ import { ExamCommandCenter } from "@/components/command-center/ExamCommandCenter
 import { PomodoroTimer } from "@/components/ui/PomodoroTimer";
 import { MockTestAnalytics } from "@/components/analytics/MockTestAnalytics";
 
+
+import { StudyPlanner } from "@/components/study/StudyPlanner";
+
 export default function Home() {
   return (
     <div className="max-w-7xl mx-auto space-y-8 pb-10">
@@ -36,6 +39,12 @@ export default function Home() {
           <div className="h-[400px]">
             <JobTicker />
           </div>
+
+          {/* Study Planner */}
+          <div className="h-[500px]">
+            <StudyPlanner />
+          </div>
+
           {/* Mock Test Analytics (Moved to Left Column for balance) */}
           <MockTestAnalytics />
         </div>
