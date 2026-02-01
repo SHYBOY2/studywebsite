@@ -10,16 +10,15 @@ export interface JobNotification {
 
 export async function fetchLatestJobs(): Promise<JobNotification[]> {
     try {
-        const response = await fetch('https://www.freejobalert.com/latest-notifications/', {
+        // Add timestamp to prevent caching
+        const timestamp = Date.now();
+        const response = await fetch(`https://www.freejobalert.com/latest-notifications/?t=${timestamp}`, {
             headers: {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
-                'Accept-Language': 'en-US,en;q=0.9',
-                'Referer': 'https://www.google.com/',
-                'Upgrade-Insecure-Requests': '1',
-                'Cache-Control': 'max-age=0',
+                // Use Googlebot UA as it's often whitelisted
+                'User-Agent': 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)',
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
             },
-            next: { revalidate: 0 } // Disable cache to ensure fresh data and avoid caching errors
+            next: { revalidate: 0 }
         });
 
         if (!response.ok) {
