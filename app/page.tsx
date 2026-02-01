@@ -58,6 +58,28 @@ export default function Home() {
             <MathSearch />
           </GlassCard>
 
+          {/* Fast Math Drill Card */}
+          <GlassCard className="relative overflow-hidden group hover:border-blue-500/30 transition-colors">
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-purple-600/10 opacity-0 group-hover:opacity-100 transition-opacity" />
+            <div className="flex items-center justify-between relative z-10">
+              <div className="flex items-center gap-4">
+                <div className="p-3 bg-blue-500/10 rounded-xl text-blue-400">
+                  <Trophy className="w-6 h-6" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-white">Fast Math Accelerator</h3>
+                  <p className="text-sm text-gray-400">Practice arithmetic drills to boost calculation speed.</p>
+                </div>
+              </div>
+              <a
+                href="/fast-math"
+                className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-medium transition-colors text-sm"
+              >
+                Start Drill
+              </a>
+            </div>
+          </GlassCard>
+
           {/* Additional Resources / Tips */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <GlassCard className="bg-gradient-to-br from-emerald-900/40 to-emerald-900/10 border-emerald-500/20">
