@@ -25,12 +25,12 @@ export default function FastMathPage() {
             {/* Instructions / Tips */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-400">
                 <div className="bg-slate-900/50 p-4 rounded-xl border border-white/5">
-                    <strong className="text-blue-400 block mb-1">Speed is Key</strong>
-                    <p>You have 60 seconds. Questions get harder, but points increase with streaks.</p>
+                    <strong className="text-blue-400 block mb-1">Flexible Training</strong>
+                    <p>Choose your duration (30s to Custom). Challenge yourself to beat your personal best.</p>
                 </div>
                 <div className="bg-slate-900/50 p-4 rounded-xl border border-white/5">
-                    <strong className="text-purple-400 block mb-1">Streak Bonus</strong>
-                    <p>Maintain your streak to earn +5 bonus points for every 5 correct answers in a row.</p>
+                    <strong className="text-purple-400 block mb-1">Smart Analytics</strong>
+                    <p>Track your accuracy, speed, and streaks. Get Vedic Math tips to improve your weak areas.</p>
                 </div>
                 <div className="bg-slate-900/50 p-4 rounded-xl border border-white/5">
                     <strong className="text-emerald-400 block mb-1">Mental Gym</strong>
