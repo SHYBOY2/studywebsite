@@ -83,7 +83,18 @@ export function JobTicker() {
                     ))
                 )}
             </div>
-            <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-[#1e293b] to-transparent pointer-events-none" />
-        </GlassCard>
+
+            <div className="p-3 border-t border-white/5 text-center relative z-20 mt-auto">
+                <a
+                    href="https://www.freejobalert.com/latest-notifications/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center gap-2 text-xs font-medium text-blue-400 hover:text-blue-300 transition-colors w-full p-2 rounded-lg hover:bg-white/5"
+                >
+                    View All Notifications (FreeJobAlert.com)
+                    <ExternalLink className="w-3 h-3" />
+                </a>
+            </div>
+        </GlassCard >
     );
 }
