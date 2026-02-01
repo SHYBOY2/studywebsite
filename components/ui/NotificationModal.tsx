@@ -30,7 +30,10 @@ export function NotificationModal({ isOpen, onClose, examName }: NotificationMod
                 body: JSON.stringify({ email, examName }),
             });
 
-            if (!res.ok) throw new Error("Failed to subscribe");
+            if (!res.ok) {
+                const data = await res.json();
+                throw new Error(data.error || "Failed to subscribe");
+            }
 
             setSuccess(true);
             setTimeout(() => {
@@ -38,8 +41,8 @@ export function NotificationModal({ isOpen, onClose, examName }: NotificationMod
                 setSuccess(false);
                 setEmail("");
             }, 2000);
-        } catch (err) {
-            setError("Something went wrong. Please try again.");
+        } catch (err: any) {
+            setError(err.message || "Something went wrong. Please try again.");
         } finally {
             setLoading(false);
         }
