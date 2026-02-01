@@ -57,22 +57,6 @@ export default function Home() {
 
         {/* Center Column: Math Engine (6 cols) */}
         <div className="lg:col-span-6 space-y-6">
-          <GlassCard className="relative overflow-hidden">
-            <div className="absolute top-0 right-0 p-4 opacity-10">
-              <Sparkles className="w-24 h-24" />
-            </div>
-            <div className="flex items-center gap-3 mb-6">
-              <div className="p-2 bg-blue-500/20 rounded-lg text-blue-400">
-                <BookOpen className="w-6 h-6" />
-              </div>
-              <div>
-                <h2 className="text-2xl font-bold text-white">Math Shortcut Engine</h2>
-                <p className="text-sm text-gray-400">Interactive LaTeX formulas for instant revision</p>
-              </div>
-            </div>
-            <MathSearch />
-          </GlassCard>
-
           {/* Fast Math Drill Card */}
           <GlassCard className="relative overflow-hidden group hover:border-blue-500/30 transition-colors">
             <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-purple-600/10 opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -93,6 +77,23 @@ export default function Home() {
                 Start Drill
               </a>
             </div>
+          </GlassCard>
+
+          {/* Math Shortcut Engine */}
+          <GlassCard className="relative overflow-hidden">
+            <div className="absolute top-0 right-0 p-4 opacity-10">
+              <Sparkles className="w-24 h-24" />
+            </div>
+            <div className="flex items-center gap-3 mb-6">
+              <div className="p-2 bg-blue-500/20 rounded-lg text-blue-400">
+                <BookOpen className="w-6 h-6" />
+              </div>
+              <div>
+                <h2 className="text-2xl font-bold text-white">Math Shortcut Engine</h2>
+                <p className="text-sm text-gray-400">Interactive LaTeX formulas for instant revision</p>
+              </div>
+            </div>
+            <MathSearch />
           </GlassCard>
 
           {/* Additional Resources / Tips */}
