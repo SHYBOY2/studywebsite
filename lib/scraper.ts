@@ -1,4 +1,3 @@
-import * as cheerio from 'cheerio';
 
 export interface JobNotification {
     id: string;
@@ -17,32 +16,32 @@ export async function fetchLatestJobs(): Promise<JobNotification[]> {
         });
 
         if (!response.ok) {
+            console.error(`Status: ${response.status}`);
             throw new Error(`Failed to fetch jobs: ${response.statusText}`);
         }
 
         const html = await response.text();
-        const $ = cheerio.load(html);
         const jobs: JobNotification[] = [];
 
-        // Strategy: Find all links in the main content area that look like job posts
-        // The specific selector might need adjustment. Based on analysis, links are often in a list or table.
-        // We'll target the main container content. usually .latnot or similar, but generic 'a' with specific href patterns is safer if class is unknown.
+        // Regex to find links. Looking for <a ... href="..." ...> ... </a>
+        // We focus on href and the text content.
+        // Using [\s\S] instead of . with s flag for ES2017 compatibility
+        const linkRegex = /<a\s+(?:[^>]*?\s+)?href=(["'])(.*?)\1[^>]*>([\s\S]*?)<\/a>/gi;
 
-        // Pattern for job URLs: /articles/ or containing 'recruitment', 'exam', 'apply'
-        $('a').each((_, element) => {
-            const link = $(element).attr('href');
-            const text = $(element).text().trim();
+        let match;
+        while ((match = linkRegex.exec(html)) !== null) {
+            const link = match[2];
+            // Remove HTML tags from text (nested tags inside a)
+            const text = match[3].replace(/<[^>]*>/g, '').trim();
 
             if (link && (link.includes('/articles/') || link.includes('recruitment'))) {
-                // Avoid duplicates or generic links
+
                 if (text.toLowerCase() === 'get details' || text.toLowerCase() === 'click here') {
-                    // If the text is generic, try to derive title from URL
                     const slug = link.split('/').filter(Boolean).pop() || '';
-                    // Remove trailing numbers or generic IDs from slug if possible
                     const derivedTitle = slug
-                        .replace(/-?\d+$/, '') // remove trailing numbers
-                        .replace(/-/g, ' ') // replace dashes with spaces
-                        .replace(/\b\w/g, c => c.toUpperCase()); // Capitalize
+                        .replace(/-?\d+$/, '')
+                        .replace(/-/g, ' ')
+                        .replace(/\b\w/g, c => c.toUpperCase());
 
                     if (derivedTitle.length > 10) {
                         jobs.push({
@@ -52,7 +51,7 @@ export async function fetchLatestJobs(): Promise<JobNotification[]> {
                             category: 'Latest'
                         });
                     }
-                } else if (text.length > 10 && !text.includes('FreeJobAlert')) {
+                } else if (text.length > 10 && !text.toLowerCase().includes('freejobalert')) {
                     jobs.push({
                         id: link,
                         title: text,
@@ -61,7 +60,7 @@ export async function fetchLatestJobs(): Promise<JobNotification[]> {
                     });
                 }
             }
-        });
+        }
 
         // De-duplicate by link
         const uniqueJobs = Array.from(new Map(jobs.map(item => [item.link, item])).values());
