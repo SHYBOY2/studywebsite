@@ -1,20 +1,23 @@
 "use client";
 
+import { useState } from "react";
 import { JobTicker } from "@/components/dashboard/JobTicker";
 import { MathSearch } from "@/components/math/MathSearch";
 import { CountdownTimer } from "@/components/exam/CountdownTimer";
 import { GlassCard } from "@/components/ui/GlassCard";
-import { BookOpen, Trophy, Sparkles } from "lucide-react";
+import { BookOpen, Trophy, Sparkles, Target } from "lucide-react";
 import { ExamCommandCenter } from "@/components/command-center/ExamCommandCenter";
 import { PomodoroTimer } from "@/components/ui/PomodoroTimer";
 import { MockTestAnalytics } from "@/components/analytics/MockTestAnalytics";
-
-
 import { StudyPlanner } from "@/components/study/StudyPlanner";
 
 export default function Home() {
+  const [showPlanner, setShowPlanner] = useState(false);
+
   return (
     <div className="max-w-7xl mx-auto space-y-8 pb-10">
+      {showPlanner && <StudyPlanner onClose={() => setShowPlanner(false)} isModal={true} />}
+
       {/* Header Section */}
       <div className="flex flex-col md:flex-row items-center justify-between gap-4 py-8">
         <div className="text-center md:text-left space-y-2">
@@ -25,8 +28,16 @@ export default function Home() {
             Your competitive advantage.
           </p>
         </div>
-        {/* Pomodoro Timer Integration */}
-        <div className="w-full md:w-auto">
+
+        {/* Pomodoro Timer and Planner Integration */}
+        <div className="w-full md:w-auto flex items-center justify-center gap-3">
+          <button
+            onClick={() => setShowPlanner(true)}
+            className="flex items-center gap-2 px-4 py-3 bg-pink-600/10 hover:bg-pink-600/20 text-pink-400 rounded-xl border border-pink-500/20 transition-all hover:scale-105 active:scale-95 shadow-lg group"
+          >
+            <Target className="w-5 h-5 group-hover:rotate-12 transition-transform" />
+            <span className="font-semibold">Planner</span>
+          </button>
           <PomodoroTimer />
         </div>
       </div>
@@ -38,11 +49,6 @@ export default function Home() {
         <div className="lg:col-span-3 space-y-6">
           <div className="h-[400px]">
             <JobTicker />
-          </div>
-
-          {/* Study Planner */}
-          <div className="h-[500px]">
-            <StudyPlanner />
           </div>
 
           {/* Mock Test Analytics (Moved to Left Column for balance) */}

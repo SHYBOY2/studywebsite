@@ -2,12 +2,13 @@
 
 import { useState, useEffect } from "react";
 import { GlassCard } from "@/components/ui/GlassCard";
-import { Plus, Trash2, CheckCircle, Circle, Target, Calendar, Award } from "lucide-react";
+import { Plus, Trash2, CheckCircle, Circle, Target, Calendar, Award, X, Clock } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface Task {
     id: string;
     text: string;
+    time?: string;
     completed: boolean;
 }
 
@@ -18,7 +19,12 @@ interface Goals {
     exam: string[];
 }
 
-export function StudyPlanner() {
+interface StudyPlannerProps {
+    onClose?: () => void;
+    isModal?: boolean;
+}
+
+export function StudyPlanner({ onClose, isModal = false }: StudyPlannerProps) {
     const [activeTab, setActiveTab] = useState<'daily' | 'weekly' | 'monthly' | 'exam'>('daily');
     const [goals, setGoals] = useState<Goals>({
         daily: [],
@@ -27,6 +33,7 @@ export function StudyPlanner() {
         exam: []
     });
     const [newItem, setNewItem] = useState("");
+    const [newTime, setNewTime] = useState("");
 
     // Load from localStorage
     useEffect(() => {
@@ -52,7 +59,7 @@ export function StudyPlanner() {
         if (activeTab === 'daily') {
             setGoals(prev => ({
                 ...prev,
-                daily: [...prev.daily, { id: Date.now().toString(), text: newItem, completed: false }]
+                daily: [...prev.daily, { id: Date.now().toString(), text: newItem, time: newTime, completed: false }]
             }));
         } else {
             setGoals(prev => ({
@@ -61,6 +68,7 @@ export function StudyPlanner() {
             }));
         }
         setNewItem("");
+        setNewTime("");
     };
 
     const toggleDailyTask = (id: string) => {
@@ -91,11 +99,18 @@ export function StudyPlanner() {
         { id: 'exam', label: 'Exam Goals', icon: Target },
     ];
 
-    return (
-        <GlassCard className="h-full flex flex-col min-h-[400px]">
-            <div className="flex items-center gap-2 mb-6 border-b border-white/10 pb-4">
-                <Target className="w-5 h-5 text-pink-400" />
-                <h2 className="text-xl font-bold text-white">Study Planner</h2>
+    const Content = (
+        <GlassCard className={`h-full flex flex-col ${isModal ? 'min-h-[500px] border-pink-500/20' : 'min-h-[400px]'}`}>
+            <div className="flex items-center justify-between mb-6 border-b border-white/10 pb-4">
+                <div className="flex items-center gap-2">
+                    <Target className="w-5 h-5 text-pink-400" />
+                    <h2 className="text-xl font-bold text-white">Study Planner</h2>
+                </div>
+                {isModal && onClose && (
+                    <button onClick={onClose} className="text-gray-400 hover:text-white transition-colors">
+                        <X className="w-5 h-5" />
+                    </button>
+                )}
             </div>
 
             {/* Tabs */}
@@ -116,19 +131,34 @@ export function StudyPlanner() {
             </div>
 
             {/* Input Area */}
-            <form onSubmit={addItem} className="relative mb-6">
-                <input
-                    type="text"
-                    value={newItem}
-                    onChange={(e) => setNewItem(e.target.value)}
-                    placeholder={activeTab === 'daily' ? "Add a new task..." : `Add a ${activeTab} goal...`}
-                    className="w-full bg-black/20 border border-white/10 rounded-lg py-2.5 pl-4 pr-12 text-sm text-white placeholder:text-gray-500 focus:outline-none focus:border-pink-500/50 transition-colors"
-                />
+            <form onSubmit={addItem} className="relative mb-6 flex gap-2">
+                <div className="relative flex-1">
+                    <input
+                        type="text"
+                        value={newItem}
+                        onChange={(e) => setNewItem(e.target.value)}
+                        placeholder={activeTab === 'daily' ? "Add a new task..." : `Add a ${activeTab} goal...`}
+                        className="w-full bg-black/20 border border-white/10 rounded-lg py-2.5 pl-4 pr-4 text-sm text-white placeholder:text-gray-500 focus:outline-none focus:border-pink-500/50 transition-colors"
+                    />
+                </div>
+                {activeTab === 'daily' && (
+                    <div className="relative w-24">
+                        <input
+                            type="text"
+                            value={newTime}
+                            onChange={(e) => setNewTime(e.target.value)}
+                            placeholder="Time"
+                            title="e.g. 2h, 30m"
+                            className="w-full bg-black/20 border border-white/10 rounded-lg py-2.5 pl-8 pr-2 text-sm text-white placeholder:text-gray-500 focus:outline-none focus:border-pink-500/50 transition-colors"
+                        />
+                        <Clock className="w-3.5 h-3.5 text-gray-400 absolute left-3 top-3.5" />
+                    </div>
+                )}
                 <button
                     type="submit"
-                    className="absolute right-1.5 top-1.5 p-1.5 bg-pink-600 hover:bg-pink-500 text-white rounded-md transition-colors"
+                    className="p-2.5 bg-pink-600 hover:bg-pink-500 text-white rounded-lg transition-colors flex items-center justify-center shrink-0"
                 >
-                    <Plus className="w-4 h-4" />
+                    <Plus className="w-5 h-5" />
                 </button>
             </form>
 
@@ -155,9 +185,16 @@ export function StudyPlanner() {
                                         ) : (
                                             <Circle className="w-5 h-5 text-gray-500 shrink-0 group-hover:text-pink-400 transition-colors" />
                                         )}
-                                        <span className={`text-sm ${task.completed ? "text-gray-500 line-through" : "text-gray-200"}`}>
-                                            {task.text}
-                                        </span>
+                                        <div className="flex flex-col">
+                                            <span className={`text-sm ${task.completed ? "text-gray-500 line-through" : "text-gray-200"}`}>
+                                                {task.text}
+                                            </span>
+                                            {task.time && (
+                                                <span className="text-xs text-pink-400/80 font-medium flex items-center gap-1 mt-0.5">
+                                                    <Clock className="w-3 h-3" /> {task.time}
+                                                </span>
+                                            )}
+                                        </div>
                                     </button>
                                     <button
                                         onClick={() => deleteItem(0, task.id)}
@@ -198,4 +235,21 @@ export function StudyPlanner() {
             </div>
         </GlassCard>
     );
+
+    if (isModal) {
+        return (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+                <motion.div
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    className="w-full max-w-lg relative"
+                >
+                    {Content}
+                </motion.div>
+            </div>
+        );
+    }
+
+    return Content;
 }
