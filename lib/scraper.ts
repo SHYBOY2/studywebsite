@@ -1,4 +1,6 @@
 
+import * as cheerio from 'cheerio';
+
 export interface JobNotification {
     id: string;
     title: string;
@@ -10,9 +12,14 @@ export async function fetchLatestJobs(): Promise<JobNotification[]> {
     try {
         const response = await fetch('https://www.freejobalert.com/latest-notifications/', {
             headers: {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+                'Accept-Language': 'en-US,en;q=0.9',
+                'Referer': 'https://www.google.com/',
+                'Upgrade-Insecure-Requests': '1',
+                'Cache-Control': 'max-age=0',
             },
-            next: { revalidate: 3600 } // Cache for 1 hour
+            next: { revalidate: 0 } // Disable cache to ensure fresh data and avoid caching errors
         });
 
         if (!response.ok) {
@@ -21,21 +28,15 @@ export async function fetchLatestJobs(): Promise<JobNotification[]> {
         }
 
         const html = await response.text();
+        const $ = cheerio.load(html);
         const jobs: JobNotification[] = [];
 
-        // Regex to find links. Looking for <a ... href="..." ...> ... </a>
-        // We focus on href and the text content.
-        // Using [\s\S] instead of . with s flag for ES2017 compatibility
-        const linkRegex = /<a\s+(?:[^>]*?\s+)?href=(["'])(.*?)\1[^>]*>([\s\S]*?)<\/a>/gi;
-
-        let match;
-        while ((match = linkRegex.exec(html)) !== null) {
-            const link = match[2];
-            // Remove HTML tags from text (nested tags inside a)
-            const text = match[3].replace(/<[^>]*>/g, '').trim();
+        $('a').each((_, el) => {
+            const link = $(el).attr('href');
+            const text = $(el).text().trim();
 
             if (link && (link.includes('/articles/') || link.includes('recruitment'))) {
-
+                // If the link text is generic like "Get Details", try to derive title from URL
                 if (text.toLowerCase() === 'get details' || text.toLowerCase() === 'click here') {
                     const slug = link.split('/').filter(Boolean).pop() || '';
                     const derivedTitle = slug
@@ -51,7 +52,9 @@ export async function fetchLatestJobs(): Promise<JobNotification[]> {
                             category: 'Latest'
                         });
                     }
-                } else if (text.length > 10 && !text.toLowerCase().includes('freejobalert')) {
+                }
+                // Otherwise use the link text if it looks like a title
+                else if (text.length > 10 && !text.toLowerCase().includes('freejobalert')) {
                     jobs.push({
                         id: link,
                         title: text,
@@ -60,7 +63,7 @@ export async function fetchLatestJobs(): Promise<JobNotification[]> {
                     });
                 }
             }
-        }
+        });
 
         // De-duplicate by link
         const uniqueJobs = Array.from(new Map(jobs.map(item => [item.link, item])).values());
