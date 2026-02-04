@@ -25,6 +25,7 @@ export function PomodoroTimer() {
     const [isActive, setIsActive] = useState(false);
     const [mode, setMode] = useState<"study" | "break">("study");
     const [currentFact, setCurrentFact] = useState(FACTS[0]);
+    const [lastLoggedTimeLeft, setLastLoggedTimeLeft] = useState(STUDY_DURATION);
 
     // Stats State
     const [todayMinutes, setTodayMinutes] = useState(0);
@@ -34,6 +35,20 @@ export function PomodoroTimer() {
     useEffect(() => {
         setTodayMinutes(StudyLog.getTodayTotal());
     }, []);
+
+
+
+    const saveProgress = () => {
+        if (mode !== 'study') return;
+
+        const elapsed = lastLoggedTimeLeft - timeLeft;
+        if (elapsed > 0) {
+            const minutes = elapsed / 60;
+            StudyLog.addSession(minutes);
+            setTodayMinutes(prev => prev + minutes);
+            setLastLoggedTimeLeft(timeLeft);
+        }
+    };
 
     useEffect(() => {
         let interval: NodeJS.Timeout | null = null;
@@ -47,13 +62,17 @@ export function PomodoroTimer() {
             // Logic when timer ends: Switch modes and LOG if was studying
             if (mode === "study") {
                 // Log the completed session
-                const minutesCompleted = Math.floor(STUDY_DURATION / 60);
-                StudyLog.addSession(minutesCompleted);
-                setTodayMinutes(prev => prev + minutesCompleted);
+                const elapsed = lastLoggedTimeLeft; // timeLeft is 0
+                if (elapsed > 0) {
+                    const minutes = elapsed / 60;
+                    StudyLog.addSession(minutes);
+                    setTodayMinutes(prev => prev + minutes);
+                }
 
                 // Switch to break
                 setMode("break");
                 setTimeLeft(BREAK_DURATION);
+                setLastLoggedTimeLeft(BREAK_DURATION); // Not tracked for stats but resets logic
                 setCurrentFact(FACTS[Math.floor(Math.random() * FACTS.length)]);
 
                 // Play notification sound (optional, browser policy restricts autoplay)
@@ -61,6 +80,7 @@ export function PomodoroTimer() {
             } else {
                 setMode("study");
                 setTimeLeft(STUDY_DURATION);
+                setLastLoggedTimeLeft(STUDY_DURATION);
             }
         }
         return () => {
@@ -68,11 +88,21 @@ export function PomodoroTimer() {
         };
     }, [isActive, timeLeft, mode]);
 
-    const toggleTimer = () => setIsActive(!isActive);
+    const toggleTimer = () => {
+        if (isActive) {
+            saveProgress();
+        }
+        setIsActive(!isActive);
+    };
+
     const resetTimer = () => {
+        if (isActive || mode === 'study') {
+            saveProgress();
+        }
         setIsActive(false);
         setMode("study");
         setTimeLeft(STUDY_DURATION);
+        setLastLoggedTimeLeft(STUDY_DURATION);
     };
 
     const formatTime = (seconds: number) => {
