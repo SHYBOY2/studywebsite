@@ -1,4 +1,4 @@
-export type ExamCategory = "RRB" | "SSC" | "Banking";
+export type ExamCategory = "RRB" | "SSC" | "Banking" | "Entrance";
 
 export interface ExamEvent {
     id: string;
@@ -48,6 +48,44 @@ export const EXAM_CALENDAR_2026: ExamEvent[] = [
         applicationStart: "2026-08-01T00:00:00", // Tentative
         examDateStart: "2026-10-10T09:00:00",
         examDateText: "Oct 10–11, 2026",
+        status: "Expected"
+    },
+    // Entrance Exams (M.Tech/MCA)
+    {
+        id: "apicet-2026",
+        name: "AP ICET 2026 (MBA/MCA)",
+        category: "Entrance",
+        applicationStart: "2026-02-05T00:00:00",
+        applicationEnd: "2026-04-07T23:59:59", // Tentative based on first week of April
+        examDateStart: "2026-05-02T09:00:00",
+        examDateText: "May 02, 2026",
+        applyLink: "https://cets.apsche.ap.gov.in/ICET",
+        status: "Live"
+    },
+    {
+        id: "ap-pgecet-2026",
+        name: "AP PGECET 2026 (M.Tech)",
+        category: "Entrance",
+        applicationStart: "2026-02-06T00:00:00",
+        examDateStart: "2026-04-29T09:00:00",
+        examDateText: "Apr 29 – May 02, 2026",
+        applyLink: "https://cets.apsche.ap.gov.in/PGECET",
+        status: "Upcoming"
+    },
+    {
+        id: "gate-2026",
+        name: "GATE 2026",
+        category: "Entrance",
+        examDateStart: "2026-02-07T09:00:00",
+        examDateText: "Feb 7, 8, 14, 15, 2026",
+        status: "Live"
+    },
+    {
+        id: "nimcet-2026",
+        name: "NIMCET 2026 (MCA)",
+        category: "Entrance",
+        applicationStart: "2026-02-15T00:00:00", // Expected mid-Feb
+        examDateText: "June 08, 2026 (Tentative)",
         status: "Expected"
     }
 ];

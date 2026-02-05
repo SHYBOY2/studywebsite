@@ -50,7 +50,7 @@ export function ExamCommandCenter() {
             <div className="flex items-center justify-between">
                 <h2 className="text-2xl font-bold text-white">Exam Command Center</h2>
                 <div className="flex gap-2">
-                    {(["All", "RRB", "SSC", "Banking"] as const).map(cat => (
+                    {(["All", "RRB", "SSC", "Banking", "Entrance"] as const).map(cat => (
                         <button
                             key={cat}
                             onClick={() => setSelectedCategory(cat)}
