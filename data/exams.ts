@@ -55,21 +55,37 @@ export const EXAM_CALENDAR_2026: ExamEvent[] = [
         id: "apicet-2026",
         name: "AP ICET 2026 (MBA/MCA)",
         category: "Entrance",
-        applicationStart: "2026-02-05T00:00:00",
-        applicationEnd: "2026-04-07T23:59:59", // Tentative based on first week of April
-        examDateStart: "2026-05-02T09:00:00",
-        examDateText: "May 02, 2026",
+        applicationStart: "2026-03-01T00:00:00", // Tentative (March 1st week)
+        examDateText: "May 2026 (Expected)",
         applyLink: "https://cets.apsche.ap.gov.in/ICET",
-        status: "Live"
+        status: "Upcoming"
     },
     {
         id: "ap-pgecet-2026",
         name: "AP PGECET 2026 (M.Tech)",
         category: "Entrance",
         applicationStart: "2026-02-06T00:00:00",
-        examDateStart: "2026-04-29T09:00:00",
-        examDateText: "Apr 29 – May 02, 2026",
+        examDateStart: "2026-04-28T09:00:00",
+        examDateText: "Apr 28 – 30, 2026",
         applyLink: "https://cets.apsche.ap.gov.in/PGECET",
+        status: "Upcoming" // Starts Feb 06
+    },
+    {
+        id: "ts-icet-2026",
+        name: "TS ICET 2026 (MBA/MCA)",
+        category: "Entrance",
+        applicationStart: "2026-02-12T00:00:00", // Tentative
+        examDateStart: "2026-05-13T09:00:00",
+        examDateText: "May 13 – 14, 2026",
+        status: "Upcoming"
+    },
+    {
+        id: "ts-pgecet-2026",
+        name: "TS PGECET 2026 (M.Tech)",
+        category: "Entrance",
+        applicationStart: "2026-03-17T00:00:00", // Tentative
+        examDateStart: "2026-05-28T09:00:00",
+        examDateText: "May 28 – 31, 2026",
         status: "Upcoming"
     },
     {
@@ -84,8 +100,8 @@ export const EXAM_CALENDAR_2026: ExamEvent[] = [
         id: "nimcet-2026",
         name: "NIMCET 2026 (MCA)",
         category: "Entrance",
-        applicationStart: "2026-02-15T00:00:00", // Expected mid-Feb
-        examDateText: "June 08, 2026 (Tentative)",
+        applicationStart: "2026-03-15T00:00:00", // Expected March
+        examDateText: "Jun 2026 (Tentative)",
         status: "Expected"
     }
 ];
